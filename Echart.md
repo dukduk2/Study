@@ -164,11 +164,177 @@ $.get('data.json').done(function (data) {
     });
 });
 ```
+데이터 업데이트는 name을 통해 응답해야할 series를 찾아야 한다
+일반적으로 series name으로 데이터를 업데이트하는 것이 좋다
 
+● 로딩 애니메이션
+데이터를 띄우기 전에 echart가 제공하는 로딩 애니메이션을 띄우고, 데이터를 띄운 후 내릴 수 있다.
+
+```
+javascript
+myChart.showLoading();
+$.get('data.json').done(function (data) {
+    myChart.hideLoading();
+    myChart.setOption(...);
+});
+```
+
+● 동적인 데이터 변경
+```
+javascript
+var base = +new Date(2014, 9, 3);
+var oneDay = 24 * 3600 * 1000;
+var date = [];
+
+var data = [Math.random() * 150];
+var now = new Date(base);
+
+function addData(shift) {
+    now = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/');
+    date.push(now);
+    data.push((Math.random() - 0.4) * 10 + data[data.length - 1]);
+
+    if (shift) {
+        date.shift();
+        data.shift();
+    }
+
+    now = new Date(+new Date(now) + oneDay);
+}
+
+for (var i = 1; i < 100; i++) {
+    addData();
+}
+
+option = {
+    xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: date
+    },
+    yAxis: {
+        boundaryGap: [0, '50%'],
+        type: 'value'
+    },
+    series: [
+        {
+            name:'成交',
+            type:'line',
+            smooth:false,
+            symbol: 'none',
+            stack: 'a',
+            areaStyle: {
+                normal: {}
+            },
+            data: data
+        }
+    ]
+};
+
+setInterval(function () {
+    addData(true);
+    myChart.setOption({
+        xAxis: {
+            data: date
+        },
+        series: [{
+            name:'成交',
+            data: data
+        }]
+    });
+}, 500);
+```
+
+● DataSet
+ECharts 4 이전에는 데이터를 각 series에서만 선언할 수 있었다. 다른 series는 공유 불가
+```
+javascript
+option: {
+    xAxis: {
+        type: 'category',
+        data: ['Matcha Latte', 'Milk Tea', 'Cheese Cocoa', 'Walnut Brownie']
+    },
+    yAxis: {},
+    series: [
+        {
+            type: 'bar',
+            name: '2015',
+            data: [89.3, 92.1, 94.4, 85.4]
+        },
+        {
+            type: 'bar',
+            name: '2016',
+            data: [95.8, 89.4, 91.2, 76.9]
+        },
+        {
+            type: 'bar',
+            name: '2017',
+            data: [97.7, 83.1, 92.5, 78.1]
+        }
+    ]
+}
+```
+
+달라진 dataSet
+```
+javascript
+option = {
+    legend: {},
+    tooltip: {},
+    dataset: {
+        // Provide data.
+        source: [
+            ['product', '2015', '2016', '2017'],
+            ['Matcha Latte', 43.3, 85.8, 93.7],
+            ['Milk Tea', 83.1, 73.4, 55.1],
+            ['Cheese Cocoa', 86.4, 65.2, 82.5],
+            ['Walnut Brownie', 72.4, 53.9, 39.1]
+        ]
+    },
+    // Declare X axis, which is a category axis, mapping
+    // to the first column by default.
+    xAxis: {type: 'category'},
+    // Declare Y axis, which is a value axis.
+    yAxis: {},
+    // Declare several series, each of them mapped to a
+    // column of the dataset by default.
+    series: [
+        {type: 'bar'},
+        {type: 'bar'},
+        {type: 'bar'}
+    ]
+}
+```
+```
+javascript
+legend: {},
+    tooltip: {},
+    dataset: {
+        // Here the declared `dimensions` is mainly for providing the order of
+        // the dimensions, which enables ECharts to apply the default mapping
+        // from dimensions to axes.
+        // Alternatively, we can declare `series.encode` to specify the mapping,
+        // which will be introduced later.
+        dimensions: ['product', '2015', '2016', '2017'],
+        source: [
+            {product: 'Matcha Latte', '2015': 43.3, '2016': 85.8, '2017': 93.7},
+            {product: 'Milk Tea', '2015': 83.1, '2016': 73.4, '2017': 55.1},
+            {product: 'Cheese Cocoa', '2015': 86.4, '2016': 65.2, '2017': 82.5},
+            {product: 'Walnut Brownie', '2015': 72.4, '2016': 53.9, '2017': 39.1}
+        ]
+    },
+    xAxis: {type: 'category'},
+    yAxis: {},
+    series: [
+        {type: 'bar'},
+        {type: 'bar'},
+        {type: 'bar'}
+    ]
+```
 
 xAxis프로퍼티 속 객체에 들어가는 프로퍼티
 type : 축에 들어갈 데이터를 설정(data프로퍼티가 있다면 명시 안해도 됌)
-boundaryGap: true(default)면 0~첫번째카테고리 여백, 마지막카테고리~여백, false면 여백없음
+boundaryGap: true(default)면 0부터 첫번째카테고리까지 여백, 마지막카테고리부터 끝까지 여백, false면 여백없음
 
 
 
