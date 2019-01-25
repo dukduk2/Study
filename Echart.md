@@ -18,6 +18,8 @@ echarts.init을 통해 인스턴스를 생성하고, 정의한 차트의 내용�
 var option = {...}; setOption(option) 혹은
 setOption({.....})으로 데이터 정의 가능
 
+```
+javascript
 backgroundColor: '#2c343c'  //전체 배경색 지정
 
 title: {text: 'Line Chart'}  // 제목 지정
@@ -64,23 +66,104 @@ setOption({
           shadowColor: 'rgba(0, 0, 0, 0.5)'
       }
    
-   ※ 명시적 스타일 커스터마이징 (itemStyle, lineStyle, areaStyle, label, ...)
-   
-      
-      
-}
 
+
+}
+```
 
 
 ● 테마 지정
+```
+javascript
 var chart = echarts.init(dom, 'light');           //테마 지정
 var chart = echarts.init(dom, 'dark');
-
-위의 두 개의 테마 외에는 다운 받아서 사용해야한다.
+```
+위의 두 개의 테마 외에는 다운 받아서 사용해야 한다
 
 
 ● 팔레트 지정
+        시리즈와 데이터로 자동 선택되는 색상 그룹을 제공
+        전역 팔레트 또는 특정 시리즈의 독점 팔레트
 
+```
+javascript
+option = {
+    color: ['red', 'blue' , 'yellow'],          // 전역 팔레트
+    series: [
+    {
+        type: 'bar',
+        color: ['orange','skyblue','lightgreen'],       //독점 팔레트
+        ...
+    },
+    {
+        type: 'pie',
+        color: ['pink', 'green', 'navy'],       //독점 팔레트
+        ...
+    }
+    ]
+}
+```
+
+
+● 명시적 스타일 커스터마이징
+스타일을 명시적으로 설정하는 것이 일반적이다.
+ECharts 옵션 전체에서 스타일 관련 옵션은 다양한 장소에서 설정이 가능하다 (itemStyle, lineStyle, areaStyle, label 등)
+
+일반적으로 내장 된 모든 구성 요소 및 시리즈는 itemStyle, lineStyle, areaStyle, label 등의 명명 규칙을 따른다.
+일련의 구성 요소나 구성 요소에 따라 위치가 다를 수 있다.
+
+
+● Style of emphasis state
+마우스가 그래픽 요소를 가리키면 표시되는 스타일
+default값은 normal style
+emphasis 속성을 통해 지정
+강조의 옵션은 정상 상태의 옵션과 동일합니다.
+
+※대부분의 사용자들이 normal 스타일만을 사용하기 때문에 ECharts4 이후로 normal 지정 없이 스타일을 작성 가능
+
+● Asynchronous Loading 
+초기화 후에도 데이터를 얻은 후에 jQuery와 같은 기타 툴을 이용하여 setOption()을 통해 언제든지 데이터 및 항목 전달 가능
+
+다른 스타일을 지정하고 빈 직사각형 축만 표시한 후, 데이터가 준비됐을 때 채우기도 가능
+
+```
+javascript
+var myChart = echarts.init(document.getElementById('main'));
+// show title. legend and empty axis
+myChart.setOption({
+    title: {
+        text: 'asynchronous data loading example'
+    },
+    tooltip: {},
+    legend: {
+        data:['Sales']
+    },
+    xAxis: {
+        data: []
+    },
+    yAxis: {},
+    series: [{
+        name: 'Sales',
+        type: 'bar',
+        data: []
+    }]
+});
+
+// Asynchronous data loading 
+$.get('data.json').done(function (data) {
+    // fill in data
+    myChart.setOption({
+        xAxis: {
+            data: data.categories
+        },
+        series: [{
+            // find series by name
+            name: 'Sales',
+            data: data.data
+        }]
+    });
+});
+```
 
 
 xAxis프로퍼티 속 객체에 들어가는 프로퍼티
