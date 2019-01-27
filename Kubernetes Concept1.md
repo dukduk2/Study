@@ -22,4 +22,29 @@ kube-proxy : 각 노드의 쿠버네티스 네트워킹 서비스를 반영하�
 이런 추상 개념은 쿠버네티스 API 내 오브젝트로 표현된다.
 
 #### 기초적인 쿠버네티스 오브젝트에는 다음과 같은 것들이 있다.
-파드
+Pod
+Service
+Volume
+Namespace
+
+#### 추가로, 쿠버네티스에는 Controller라는 보다 높은 수준의 추상 개념도 다수 있다. Controller는 기초 오브젝트를 기반으로, 부가 기능 및 편의 기능을 제공해준다. 다음이 포함된다.
+Replica Set
+Deployment
+Stateful Set
+Demon Set
+Job
+
+### Kubernetes Control Plane
+Kubernetes Master와 kubelet 프로세스와 같은 Kubernetes Control Plane의 다양한 구성 요소는 쿠버네티스가 클러스터와 통신하는 방식을 관장한다.
+Control Plane은 시스템 내 모든 쿠버네티스 오브젝트의 레코드를 유지하면서, 오브젝트의 상태를 관리하는 제어 루프를 지속적으로 구동시킨다.
+Control Plane의 제어 루프는 클러스터 내 변경이 발생하면 언제라도 응답하고 시스템 내 모든 오브젝트의 실제 상태가 사용자가 바라는 상태와 일치시키기 위한 일을 한다.
+
+예를 들어, 쿠버네티스 API를 사용해서 Deployment Object를 만들 때에는, 바라는 상태를 시스템에 신규로 입력해야 한다.
+Kubernetes Control Plane이 오브젝트 생성을 기록하고, 사용자 지시대로 필요한 애플리케이션을 시작시키고 클러스터 노드에 스케줄링한다. 그래서 결국 클러스터의 실제 상태가 바라는 상태와 일치하게 된다.
+
+### Kubernetes Node
+클러스터 내 노드는 애플리케이션과 클라우드 워크플로우를 구동시키는 머신(VM, 물리 서버 등)이다.
+Kubernetes Master는 각 노드를 관리한다. 직접 노드와 직접 상호 작용할 일은 거의 없을 것이다.
+
+오브젝트 메타데이터
+Annotation
