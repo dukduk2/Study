@@ -6,6 +6,22 @@ var chart1 = echarts.init(document.getElementById('chart1'));
 var option = { ... };
 chart1.setOption(option);
 ```
+### coordinateSystem. ( string )
+- default value = 'cartesian2d'
+- 다음의 옵션들이 있는 series에서 사용되는 좌표
+- xAxisIndex와 yAxisIndex를 사용하여 2차원 직사각형 좌표에 해당하는 축의 구성 요소를 할당한다.
+
+### xAxisIndex ( number )
+- default value = 0
+- 결합할 x축의 Index(xAxisIndex)는 한 차트의 여러 x축을 지정할 때 유용하다.
+
+### yAxisIndex ( number )
+- default value = 0
+- 결합할 y축의 Index(yAxisIndex)는 한 차트의 여러 y축을 지정할 때 유용하다.
+
+### polarIndex ( number )
+- default value = 0
+- 결합할 극좌표의 Index(polarIndex)는 한 차트의 여러 극 축을 지정할 때 유용하다.
 
 ### symbol ( string )
 - default value = 'circle' ( 'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none' , 'image://url'(or dataURI ) 
@@ -216,7 +232,7 @@ areaStyle: {
 ##### color, borderColor, borderWidth, borderType, shadowBlur, shadowColor, shadowOffsetX, shadowOffsetY, oacity 속성이 있다.
 
 ### label ( Object )
-- 그래픽 항목에 대한 값, 이름 등과 가은 일부 데이터 정보를 설명
+- 그래픽 항목에 대한 값, 이름 등과 같은 일부 데이터 정보를 설명
 - ECharts 2.x에서 itemStyle 아래 배치되었지만, ECharts3에서 itemStyle과 동일한 수준으로 올라왔으며, 강조점이 있다.
 
 ##### show ( boolean )
@@ -310,6 +326,8 @@ areaStyle: {
 
 ##### label, itemStyle을 지님
 
+
+
 ### smooth ( boolean, number )
 - default value = false
 - 부드러운 곡선으로 표시할 지 여부
@@ -336,12 +354,104 @@ areaStyle: {
 
 
 # dimensions 더 해야함.
-
+# encode 더 해야함
 
 ### seriesLayoutBy ( string )
 - default value = 'column' ( 'column', 'row' )
 - dataset이 사용될 때, dataset의 행열이 series에 매핑되는지 여부를 지정. 즉, series는 행열의 레이아웃이다.
 
+### datasetIndex ( number )
+- default value = 0
+- series에 data가 지정되지 않았고, dataset이 존재할 때, series는 dataset을 이용한다.
+- datasetIndex는 사용할 dataset을 지정한다.
+
+### data ( Object )
+- series에 지정된 data가 없고, option에 dataset이 존재한다면, series는 첫번째 dataset을 datasource로 사용한다.
+- data가 지정되어 있다면, dataset은 사용되지 않는다.
+- series.datasetIndex는 다른 dataset을 지정하는데 사용할 수 있다.
+- 기본적으로 data는 2차원 배열로 표시되며, 각 열은 'dimension'으로 명명된다.
+
+```
+javascript
+series: [{
+    data: [
+        // dimX   dimY   other dimensions ...
+        [  3.4,    4.5,   15,   43],
+        [  4.2,    2.3,   20,   91],
+        [  10.8,   9.5,   30,   18],
+        [  7.2,    8.8,   18,   57]
+    ]
+}]
+```
+- cartesian(grid)에서 'dimX'와 'dimY'는 xAxis와 yAxis에 해당한다.
+- 극좌표에서 'dimX'와 'dimY'는 radiusAxis(반지름)과 angleAxis(각)에 해당한다.
+- visualMap은 하나 이상의 차원을 visual에 매핑할 수 있다.(color, symbol size ...)
+- series.symbolSize는 Icon의 크기를 특정 차원의 값으로 계산될 수 있는 callback 함수로 설정될 수 있다.
+- 다른 차원의 값은 tooltip.formatter 또는 series.label.formatter로 표시할 수 있다.
+- 특히 1개의 카테고리 축만 있는 경우(axis.type : 'category'), 데이터는 단순히 1차원 배열로 나타낼 수 있다.
+
+```
+javascript
+xAxis: {
+    data: ['a', 'b', 'm', 'n']
+},
+series: [{
+    data: [23,  44,  55,  19]
+    // data: [['a', 23], ['b', 44], ['c', 55], ['d', 19]] 와 동일
+}]
+```
+
+- 차원이 value 혹은 log일 경우(axis.type : 'value' or 'log') 값은 숫자일 수 있다.('12'와 같은 문자열도 가능)
+- 차원이 category일 경우(axis.type : 'category') 값은 axis.data의 순서(0부터 시작)여야 한다.(axis.data의 문자열 값)
+
+```
+javascript
+xAxis: {
+    type: 'category',
+    data: ['Monday', 'Tuesday', 'Wednesday', 'Thursday']
+},
+yAxis: {
+    type: 'category',
+    data: ['a', 'b', 'm', 'n', 'p', 'q']
+},
+series: [{
+    type: 'line',
+    data: [
+        // xAxis      yAxis
+        [  0,           0,    2  ], // This point is located at xAxis: 'Monday', yAxis: 'a'.
+        [  'Thursday',  2,    1  ], // This point is located at xAxis: 'Thursday', yAxis: 'm'.
+        [  2,          'p',   2  ], // This point is located at xAxis: 'Wednesday', yAxis: 'p'.
+        [  3,           3,    5  ]
+    ]
+}]
+```
+
+- data item을 커스터마이징 해야 할 경우, 속성 값이 실제 값을 표현하는 Object로 설정될 수 있다.
+
+```
+javascript
+[
+    12,               //(12,12) 좌표에 표시
+    24,
+    {
+        value: [24, 32],
+        label: {},
+        itemStyle:{}
+    },
+    33
+]
+```
+- '-'이나 null, undefined, NaN 값은 data item이 존재하지 않음으로 표현할 수 있다.
+line chart의 경우 선이 끊어지고, scatter chart는 빈 값에 대한 그래픽 요소가 표시되지 않는다.
+
+##### name ( string ), value ( number )
+- data item의 이름과 값
+
+##### symbol ( string ), symbolSize ( number, Array ), symbolRotate ( number ), symbolKeepAspect( boolean ), symbolOffset ( Array )
+
+##### label ( Object ), itemStyle ( Object ), emphasis ( Object ), tooltip ( * )
+
+### markPoint ( Object )
 
 
 ### animation ( boolean )
