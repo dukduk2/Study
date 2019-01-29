@@ -452,7 +452,53 @@ line chart의 경우 선이 끊어지고, scatter chart는 빈 값에 대한 그
 ##### label ( Object ), itemStyle ( Object ), emphasis ( Object ), tooltip ( * )
 
 ### markPoint ( Object )
+- 마크 포인트
 
+##### symbol ( string ), symbolSize ( number ), symbolRotate( number ), symbolKeepAspect ( boolean ), symbolOffset ( Array )
+
+##### silent( boolean ), label ( Object ), itemStyle ( Object ), data ( Object ), animation …
+
+### markLine
+- 차트를 설명하기 위한 선
+
+##### silent ( boolean )
+
+##### symbol ( string, Array )
+- markLine 양 끝의 Icon 유형
+
+##### symbolSize ( number, Array )
+- markLine 양 끝의 Icon의 크기
+- 너비와 높이를 별도 지정 불가
+
+##### precision
+- default value = 2
+- marking Line 값의 정밀도. 평균값 표시선을 나타낼 때 유용하다.
+
+##### label ( Object )
+- show, position, formatter, emphasis 속성을 지닌다.
+
+##### lineStyle( Object ), data ( Object ), animation …
+
+### markArea ( Object )
+
+##### silent ( boolean )
+
+##### label ( Object )
+
+##### itemStyle ( Object ), data ( Object ), animation …
+
+### zlevel ( number )
+- default value = 0
+- 점선 그래프에서 모든 그래프 요소의 레벨 값
+- Canvas로 층을 만들 때 사용. 다른 값을 지닌 요소는 다른 Canvas에 배치.
+- 자주 변경되는 요소(ex animation을 지닌 요소)는 별도의 zlevel에 넣을 수 있다.
+- zlevel이 클수록 더 위에 존재(?).
+- 메모리 비용을 생각해서 적당히 사용해야 함.
+
+### z ( number )
+- default value = 2
+- 점선 그래프에서 그래프 요소의 그려지는 순서를 제어하는 모든 그래프 요소의 값
+- zlevel보다 낮은 우선순위를 지니며, 새로운 Canvas를 만들지 않는다.
 
 ### animation ( boolean )
 - default value = true
