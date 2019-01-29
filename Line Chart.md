@@ -307,19 +307,23 @@ areaStyle: {
 ##### textBorderColor ( string )
 - default value = 'transparent'
 - 'auto'인 경우 색상이 series 색상과 같이 시각적 색상으로 지정된다.
+- 텍스트의 테두리
 
 ##### textBorderWidth ( number )
 - default value = 0
+- 텍스트의 테두리
 
 ##### textShadowColor ( string )
 - default value = 'transparent'
+- 텍스트의 테두리
 
 ##### textShadowBlur ( number ), textShadowOffsetX ( number ), textShadowOffsetY ( number )
 - default value = 0
+- 텍스트의 테두리
 
 ##### rich ( Object )
 - 임의로 지정하여, 개별적으로 스타일을 지정해줄 수 있다.
-- 잘 모르겠다.
+- label 안에서 텍스트들마다 개별적으로 스타일을 지정할 때 사용
 
 ### emphasis
 - 그래픽 강조 스타일을 의미
